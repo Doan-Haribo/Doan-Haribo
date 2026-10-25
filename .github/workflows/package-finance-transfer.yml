@@ -1,0 +1,21 @@
+name: package-finance-transfer
+on:
+  push:
+    paths:
+      - '.github/workflows/package-finance-transfer.yml'
+      - 'tmp/finance_os_v030_20261025/**'
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild encrypted transfer file
+        shell: bash
+        run: |
+          cat tmp/finance_os_v030_20261025/*.b64 | base64 -d > DANIEL_FINANCE_OS_v0.3.0_debug.apk.enc
+          test "$(stat -c%s DANIEL_FINANCE_OS_v0.3.0_debug.apk.enc)" = "6005432"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: finance-os-v030-encrypted
+          path: DANIEL_FINANCE_OS_v0.3.0_debug.apk.enc
+          retention-days: 1
